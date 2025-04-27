@@ -82,11 +82,12 @@ resource "aws_autoscaling_group" "example" {
     version = "$Latest"
     }
 
-    tag {
-        key = "Name"
-        value = "${var.cluster_name}-asg"
-        propagate_at_launch = true
-    }
+    # Static tag
+    # tag {
+    #     key = "Name"
+    #     value = "${var.cluster_name}-asg"
+    #     propagate_at_launch = true
+    # }
 
     dynamic "tag" {
         for_each = var.custom_tags
@@ -97,6 +98,30 @@ resource "aws_autoscaling_group" "example" {
             propagate_at_launch = true 
         }
     }
+}
+
+resource "aws_autoscaling_schedule" "scale_out_during_business_hours" {
+    # You can set value to either true or false in different environments.
+    count = var.enable_autoscaling ? 1 : 0  
+
+    scheduled_action_name = "scale-out-during-business-hours"
+    min_size = 2
+    max_size = 10
+    desired_capacity = 10
+    recurrence = "0 9 * * *"
+    autoscaling_group_name = aws_autoscaling_group.example.name
+}
+
+resource "aws_autoscaling_schedule" "scale_in_at_night" {
+    # You can set value to either true or false in different environments.
+    count = var.enable_autoscaling ? 1 : 0 
+
+    scheduled_action_name = "scale-in-at-night"
+    min_size = 2
+    max_size = 10
+    desired_capacity = 2
+    recurrence = "0 17 * * *"
+    autoscaling_group_name = aws_autoscaling_group.example.name
 }
 
 resource "aws_lb" "example" {
