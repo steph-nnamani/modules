@@ -270,7 +270,7 @@ resource "null_resource" "test_deployment" {
          exit 1
       fi  
     EOT
-    interpreter = ["C:/Program Files/Git/bin/bash.exe", "-c"]
+    interpreter = ["bash", "-c"]
   }
   
   # Make sure to depend on both the ALB and ASG
