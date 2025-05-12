@@ -270,7 +270,7 @@ resource "null_resource" "test_deployment" {
          exit 1
       fi  
     EOT
-    interpreter = ["bash", "-c"]
+    interpreter = ["bash", "-c"] # Updated
   }
   
   # Make sure to depend on both the ALB and ASG
