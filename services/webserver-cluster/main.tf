@@ -250,35 +250,37 @@ resource "aws_lb_listener_rule" "asg" {
     }
 }
 
-resource "null_resource" "test_deployment" {
-  provisioner "local-exec" {
-    command = <<EOT
-      echo "Testing connection to ${aws_lb.example.dns_name}..."
-      
-      # Add a sleep to allow the ALB and instances to initialize
-      echo "Waiting for 60 seconds for ALB to become ready..."
-      sleep 60
-      
-      # Try to curl the ALB DNS name with a longer timeout
-      curl -m 15 http://${aws_lb.example.dns_name}
+# # We will manage the testing in GitHub Action, so we are commenting this block out
 
-      # Check the curl exit status
-      if [ $? -eq 0 ]; then
-         echo -e "\nSuccess: Server is responding"
-      else
-         echo -e "\nError: Server is not responding"
-         exit 1
-      fi  
-    EOT
-    interpreter = ["bash", "-c"] # Updated
-  }
+# resource "null_resource" "test_deployment" {
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       echo "Testing connection to ${aws_lb.example.dns_name}..."
+      
+#       # Add a sleep to allow the ALB and instances to initialize
+#       echo "Waiting for 60 seconds for ALB to become ready..."
+#       sleep 60
+      
+#       # Try to curl the ALB DNS name with a longer timeout
+#       curl -m 15 http://${aws_lb.example.dns_name}
+
+#       # Check the curl exit status
+#       if [ $? -eq 0 ]; then
+#          echo -e "\nSuccess: Server is responding"
+#       else
+#          echo -e "\nError: Server is not responding"
+#          exit 1
+#       fi  
+#     EOT
+#     interpreter = ["bash", "-c"] # Updated
+#   }
   
-  # Make sure to depend on both the ALB and ASG
-  depends_on = [
-    aws_lb.example,
-    aws_autoscaling_group.example,
-    aws_lb_listener.http,
-    aws_lb_listener_rule.asg
-  ]
-}
+#   # Make sure to depend on both the ALB and ASG
+#   depends_on = [
+#     aws_lb.example,
+#     aws_autoscaling_group.example,
+#     aws_lb_listener.http,
+#     aws_lb_listener_rule.asg
+#   ]
+# }
 
