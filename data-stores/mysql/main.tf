@@ -9,7 +9,7 @@ terraform {
 
 
 resource "aws_db_instance" "example" {
-    identifier_prefix = "terraform-up-and-running"
+    #identifier_prefix = "terraform-up-and-running"
     
     engine_version = "8.0"
     allocated_storage = 10
