@@ -1,3 +1,9 @@
+variable "instance_class" {
+  type = string
+  description = "Instance class for the RDS instance"
+  default = "db.t3.micro"
+}
+
 variable "rds" {
   type = string
   description = "prefix name to distinguish of the RDS instance env"

@@ -13,7 +13,7 @@ resource "aws_db_instance" "example" {
     
     engine_version = "8.0"
     allocated_storage = 10
-    instance_class = "db.t2.micro"
+    instance_class = var.instance_class
     skip_final_snapshot = true
 
     # Enable backups
