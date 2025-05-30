@@ -27,3 +27,8 @@ variable "instance_types" {
   description = "The types of EC2 instances to run in the node group"
   type        = list(string)
 }
+
+variable "kubernetes_version" {
+  description = "The Kubernetes version to use for the EKS cluster"
+  type        = string
+}
