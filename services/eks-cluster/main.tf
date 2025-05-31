@@ -157,3 +157,13 @@ data "aws_subnets" "supported" {
     values = data.aws_availability_zones.available.names
   }
 }
+
+# Security Group rule to allow inbound traffic on port 80
+resource "aws_security_group_rule" "allow_http" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_eks_cluster.cluster.vpc_config[0].cluster_security_group_id
+}
