@@ -56,7 +56,7 @@ resource "kubernetes_service" "app" {
     spec {
         type = "LoadBalancer"
         port {
-            port = 5000
+            port = 80  # 5000
             target_port = var.container_port
             protocol = "TCP"
         }
