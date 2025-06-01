@@ -15,15 +15,14 @@ resource "aws_eks_cluster" "cluster" {
   role_arn = aws_iam_role.cluster.arn
   version  = var.kubernetes_version
 
-  # vpc_config {
-  #   subnet_ids = data.aws_subnets.default.ids
-  # }
-
-  ## subnet_ids updated to use filtered subnets in us-east-1
   vpc_config {
-    subnet_ids = data.aws_subnets.supported.ids
+    subnet_ids = data.aws_subnets.default.ids
   }
 
+  ## subnet_ids updated to use filtered subnets in us-east-1
+  # vpc_config {
+  #   subnet_ids = data.aws_subnets.supported.ids
+  # }
 
   # Ensure that IAM Role permissions are created before and deleted after
   # the EKS Cluster. Otherwise, EKS will not be able to properly delete
@@ -62,9 +61,10 @@ resource "aws_eks_node_group" "nodes" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = var.name
   node_role_arn   = aws_iam_role.node_group.arn
-  # subnet_ids      = data.aws_subnets.default.ids
+  subnet_ids      = data.aws_subnets.default.ids
+  
   ## node_group_subnets updated to use filtered subnets in us-east-1
-  subnet_ids = data.aws_subnets.supported.ids
+  #subnet_ids = data.aws_subnets.supported.ids
 
   instance_types  = var.instance_types
 
@@ -126,37 +126,36 @@ data "aws_vpc" "default" {
 }
 
 ## This works if using us-east-2
-
-# data "aws_subnets" "default" {
-#   filter {
-#     name   = "vpc-id"
-#     values = [data.aws_vpc.default.id]
-#   }
-# }
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
 
 ## us-east-1 region does not allow control plane 
 ## deployment in 1e availability zone.
 
 # Get the list of supported availability zones for EKS
-data "aws_availability_zones" "available" {
-  state = "available"
-  filter {
-    name   = "zone-name"
-    values = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1f"]
-  }
-}
+# data "aws_availability_zones" "available" {
+#   state = "available"
+#   filter {
+#     name   = "zone-name"
+#     values = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1f"]
+#   }
+# }
 
 # Get subnets in the supported availability zones
-data "aws_subnets" "supported" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
-  filter {
-    name   = "availability-zone"
-    values = data.aws_availability_zones.available.names
-  }
-}
+# data "aws_subnets" "supported" {
+#   filter {
+#     name   = "vpc-id"
+#     values = [data.aws_vpc.default.id]
+#   }
+#   filter {
+#     name   = "availability-zone"
+#     values = data.aws_availability_zones.available.names
+#   }
+# }
 
 # Security Group rule to allow inbound traffic on port 80
 resource "aws_security_group_rule" "allow_http" {

@@ -354,6 +354,16 @@ cd modules
 git tag -a "v0.0.1" -m "First release of webserver-cluster module for staging"
 git push --follow-tags
 
+= OR =
+==================================================
+git tag -a "v1.0.0-K8s-app" -m "Release v1.0.0 of K8s-app module"
+
+git push origin v1.0.0-K8s-app
+
+
+
+
+
 <Setting "Source Parameter">
 - Now you can use versioned module in both staging and production by specifying a Git URL in the source parameter.
 - For Git Public Repo: https://github.com/steph-nnamani/modules.git 
@@ -402,3 +412,7 @@ Open PowerShell as Administrator
 
 Run this command:
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+
+
+## NOTE
+EKS doesn't support creating control plane instances in the us-east-1e availability zone
